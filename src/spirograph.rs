@@ -43,6 +43,12 @@ impl Spirograph {
         }
     }
 
+    pub fn offset_amplitude(&mut self, offset: f64) {
+        for spinner in &mut self.spinners {
+            spinner.amplitude += offset;
+        }
+    }
+
     // return each partial sum, effectively sampling each spinner along the way
     // to the pen
     pub fn debug_sample(&self, t: f64) -> Vec<Complex> {
