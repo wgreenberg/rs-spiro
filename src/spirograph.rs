@@ -18,7 +18,7 @@ pub struct Spirograph {
 }
 
 impl Spirograph {
-    pub fn new_basic(inner_circle_ratio: f64, pen_ratio: f64, frequency: f64) -> Spirograph {
+    pub fn new(inner_circle_ratio: f64, pen_ratio: f64, frequency: f64, pen_frequency_ratio: f64) -> Spirograph {
         let main = Spinner {
             frequency,
             amplitude: 1.0,
@@ -30,11 +30,17 @@ impl Spirograph {
             phase: PI,
         };
         let pen = Spinner {
-            frequency: -4.0 * frequency,
+            frequency: -pen_frequency_ratio * frequency,
             amplitude: inner_circle_ratio * pen_ratio,
             phase: 0.0,
         };
         Spirograph { spinners: vec![main, inner, pen] }
+    }
+
+    pub fn offset_phase(&mut self, offset: f64) {
+        for spinner in &mut self.spinners {
+            spinner.phase += offset;
+        }
     }
 
     // return each partial sum, effectively sampling each spinner along the way
@@ -64,7 +70,7 @@ mod tests {
     #[test]
     fn basic() {
         // pen at the center of the spinning disc
-        let spiro = Spirograph::new_basic(0.5, 0.0, 2.0 * PI);
+        let spiro = Spirograph::new(0.5, 0.0, 2.0 * PI, 0.0);
         assert_eq!(spiro.sample(0.0), Complex { re: 0.5, im: 0.0 });
         assert_eq!(spiro.sample(0.25), Complex { re: 0.0, im: 0.5 });
         assert_eq!(spiro.sample(0.5), Complex { re: -0.5, im: 0.0 });
